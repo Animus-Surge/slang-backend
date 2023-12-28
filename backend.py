@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """
 Slang - An open source social media platform
 Backend module
@@ -8,16 +9,21 @@ License: Apache 2.0
 """
 
 import slang_backend
+from loguru import logger
 
 """
 TODO BOARD:
 
 - Socket handling
-- Database schema
+- Database schema (wip)
 - Administration system
 - Test database
 ...
 """
 
 if __name__ == "__main__":
-  slang_backend.main()
+  try:
+    slang_backend.main()
+  except KeyboardInterrupt:
+    logger.info("Shutting down...")
+    exit(0)

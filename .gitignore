@@ -1,0 +1,11 @@
+# Database files
+*.sqlite
+*.db
+
+# Logs
+*.log
+*.pid
+
+# Python
+__pycache__/
+*.pyc

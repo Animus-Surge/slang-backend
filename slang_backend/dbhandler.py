@@ -5,9 +5,8 @@ Changelog:
 Surge: Initial Commit
 """
 
+# import psycopg
 import psycopg
 
 def init():
-  # Initialize database
-  
   pass
