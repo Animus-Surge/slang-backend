@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS sl_msgs (
   author INTEGER NOT NULL,
   groupid INTEGER NOT NULL,
   channelid INTEGER NOT NULL,
-  sendDate TIMESTAMP NOT NULL DEFAULT NOW(),
+  sendDate TIMESTAMP NOT NULL DEFAULT NOW()
 );
 
 -- TODO: groups, channels, roles, posts
@@ -22,7 +22,7 @@ CREATE TABLE IF NOT EXISTS sl_usrs (
   id SERIAL PRIMARY KEY,
   username TEXT NOT NULL,
   displayname TEXT,
-  flags TEXT NOT NULL DEFAULT "",
+  flags TEXT NOT NULL DEFAULT null,
   groups TEXT,
   friends TEXT,
   posts TEXT,

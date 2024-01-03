@@ -6,7 +6,7 @@ Surge: Initial commit
 Surge: Move REST api to this file
 """
 
-from . import dbhandler, slang_socket, apihandler
+from . import dbhandler, slang_socket
 from loguru import logger
 from fastapi import FastAPI, Response
 import asyncio
@@ -25,9 +25,29 @@ async def root():
 # BEGIN: API routes
 
 # Messenger routes
+
+# GET: https://api.slang.com/v1/messages
 @app.get("/v1/messages")
-async def api_get_messages(): # api.slang.com/v1/messages?group=1&channel=1 - body contains json with additional parameters, or {} if none
+async def api_get_messages(group: int = -1, channel: int = -1):
+  # TODO: Add authentication
+  resp = Response()
+
+  # If either group or channel is -1, return 400
+  if group == -1 or channel == -1:
+    resp.status_code = 400
+    resp.content = "Invalid group or channel ID"
+  else:
+    
+    pass
+
+  return resp
+
+# POST: https://api.slang.com/v1/messages/create
+@app.post("/v1/messages/send")
+async def api_send_message(group: int = -1, channel: int = -1, user: int = -1, content: str = ""):
   pass
+
+
 
 # END: API routes
 
