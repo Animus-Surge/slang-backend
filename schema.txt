@@ -19,6 +19,7 @@ sl_msgs impl notes:
 
 Slang Groups: sl_grps
 - id: integer unique primary
+- guid: string unique
 - name: string
 - owner: integer
 - admins: integer array

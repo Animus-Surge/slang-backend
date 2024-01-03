@@ -35,7 +35,7 @@ Websocket message format (Goes in both directions):
 {
   "type": "message", // Type of message, one of: message, group, user, moderation, admin, ack
   "timestamp": <timestamp:timestamp/string/integer>, // Timestamp of message
-  "sender": <userid:integer>, // Sender of message, -1 if server
+  "sender": <userid:string>, // Sender of message, -1 if server
   "action": "create", // Action of message, one of: create, delete, edit, get, join, leave
   "data": {
     // Message data

@@ -2,6 +2,9 @@
 *.sqlite
 *.db
 
+# Python env
+.env/
+
 # Logs
 *.log
 *.pid

@@ -10,7 +10,7 @@ License: Apache 2.0
 
 import slang_backend
 from loguru import logger
-
+import asyncio
 """
 TODO BOARD:
 
@@ -23,7 +23,7 @@ TODO BOARD:
 
 if __name__ == "__main__":
   try:
-    slang_backend.main()
+    asyncio.run(slang_backend.main())
   except KeyboardInterrupt:
     logger.info("Shutting down...")
     exit(0)
