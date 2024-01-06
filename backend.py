@@ -22,8 +22,4 @@ TODO BOARD:
 """
 
 if __name__ == "__main__":
-  try:
-    asyncio.run(slang_backend.main())
-  except KeyboardInterrupt:
-    logger.info("Shutting down...")
-    exit(0)
+  slang_backend.main()

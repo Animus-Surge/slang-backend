@@ -14,7 +14,7 @@ class Message(BaseModel):
 class Group(BaseModel):
   name: str
   owner: int
-  # TODO
+  
 
 class User(BaseModel):
   # TODO
