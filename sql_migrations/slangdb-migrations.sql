@@ -2,7 +2,7 @@
 -- This file contains all the migrations for the slang backend database
 -- The migrations are run in order, and are idempotent
 -- Author: Surge
--- Version: 0.1.0
+-- Version: 0.1.1
 -- Date: 2023-12-26
 
 -- Create the messages table
@@ -10,22 +10,66 @@ CREATE TABLE IF NOT EXISTS sl_msgs (
   id SERIAL PRIMARY KEY,
   content TEXT NOT NULL,
   author INTEGER NOT NULL,
-  groupid INTEGER NOT NULL,
-  channelid INTEGER NOT NULL,
-  sendDate TIMESTAMP NOT NULL DEFAULT NOW()
+  group_id INTEGER NOT NULL,
+  channel_id INTEGER NOT NULL,
+  edited BOOLEAN NOT NULL DEFAULT FALSE,
+  send_date TIMESTAMP NOT NULL DEFAULT NOW()
 );
 
--- TODO: groups, channels, roles, posts
+-- Create the channels table
+CREATE TABLE IF NOT EXISTS sl_chnl (
+  id SERIAL PRIMARY KEY,
+  name TEXT NOT NULL,
+  group_id INTEGER NOT NULL,
+  role_overrides TEXT ARRAY,
+  sensitive BOOLEAN NOT NULL DEFAULT FALSE
+);
+-- See docs/channels for role_overrides info
+
+-- Create the posts table
+CREATE TABLE IF NOT EXISTS sl_post (
+  id SERIAL PRIMARY KEY,
+  title TEXT,
+  group_id INTEGER NOT NULL DEFAULT -1,
+  op INTEGER NOT NULL,
+  content TEXT NOT NULL
+);
+-- group -1 is public group everyone's in
+
+-- Create the groups table
+CREATE TABLE IF NOT EXISTS sl_grps (
+  id SERIAL PRIMARY KEY,
+  name TEXT NOT NULL,
+  owner INTEGER NOT NULL,
+  banner TEXT,
+  roles INTEGER ARRAY,
+  admins INTEGER ARRAY
+);
+
+-- Create the roles table
+CREATE TABLE IF NOT EXISTS sl_role (
+  id SERIAL PRIMARY KEY,
+  name TEXT NOT NULL,
+  permissions INTEGER NOT NULL DEFAULT 0,
+  color INTEGER NOT NULL DEFAULT 16777215,
+  users INTEGER ARRAY
+);
 
 -- Create the users table
 CREATE TABLE IF NOT EXISTS sl_usrs (
   id SERIAL PRIMARY KEY,
+  guid TEXT NOT NULL,
   username TEXT NOT NULL,
   displayname TEXT,
+  bio TEXT,
+  status TEXT,
+  pronouns TEXT,
   flags TEXT NOT NULL DEFAULT null,
-  groups TEXT,
-  friends TEXT,
-  posts TEXT,
+  groups INTEGER ARRAY,
+  friends INTEGER ARRAY,
+  blocked INTEGER ARRAY,
+  posts INTEGER ARRAY,
   lockdown BOOLEAN NOT NULL DEFAULT FALSE,
-  UNIQUE(username)
+  UNIQUE(username, guid)
 );
+-- See docs/users for more info on the difference between the id and guid and flags and lockdown information

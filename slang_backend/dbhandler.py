@@ -4,6 +4,7 @@ Database handler for Slang
 Changelog:
 Surge: Initial Commit
 Surge: Create migration system, add init function, add database functions
+Surge - 01/07/24: Add migration error checking, testing
 """
 
 import psycopg
@@ -27,9 +28,11 @@ def create_message(group: int, channel: int, user: int, content: str):
     int: ID of message
   """
   global conn
+  logger.info('Method call: create_message, with arguments (group=%s, channel=%s, user=%s, content=%s)', (group, channel, user, content))
+
   cur = conn.cursor()
 
-  cur.execute("INSERT INTO sl_msgs (group_id, channel_id, user_id, content) VALUES (%s, %s, %s, %s) RETURNING id;", (group, channel, user, content))
+  cur.execute("INSERT INTO sl_msgs (groupid, channelid, author, content) VALUES (%s, %s, %s, %s) RETURNING id;", (group, channel, user, content))
   conn.commit()
 
   return cur.fetchone()[0]
@@ -46,28 +49,32 @@ def get_messages(group: int, channel: int):
     list: List of messages
   """
   global conn
+  logger.info('Method call: get_messages, with arguments (group=%s, channel=%s)', (group, channel))
   cur = conn.cursor()
-  cur.execute("SELECT * FROM sl_msgs WHERE group_id=%s AND channel_id=%s;", (group, channel))
-  return cur.fetchall()
+  cur.execute("SELECT content, author FROM sl_msgs WHERE group_id=%s AND channel_id=%s;", (group, channel))
+
+  result = cur.fetchall()
+  print(result)
+
+  return None # TODO: convert result to json string
 
 def init():
   global conn
+
   logger.info("Initializing database...")
 
   conn = psycopg.connect("dbname=slangdb user=postgres")
-
-  # Do some checking to see if we need to initialize the database
   cur = conn.cursor()
 
-  # Check if database is initialized
-  cur.execute("SELECT * FROM information_schema.tables WHERE table_name='sl_msgs';")
-  if cur.rowcount == 0:
-    # Database is not initialized, initialize it
-    # Load schema from ./sql_migrations/slangdb-migrations.sql
-    logger.info("Database not initialized, initializing...")
-    with open("./sql_migrations/slangdb-migrations.sql", "r") as f:
-      cur.execute(f.read())
-    conn.commit()
-
+  with open('./sql_migrations/slangdb-migrations.sql', 'r') as mig:
+    try:
+      cur.execute(mig.read())
+    except psycopg.errors.SyntaxError:
+      logger.exception('Syntax error whilst attempting database migration run')
+      return False
+  
+  conn.commit() 
+  
   logger.info("Database initialized.")
-  pass
+  return True
+
