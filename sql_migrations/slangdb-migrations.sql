@@ -20,6 +20,8 @@ CREATE TABLE IF NOT EXISTS sl_msgs (
 CREATE TABLE IF NOT EXISTS sl_chnl (
   id SERIAL PRIMARY KEY,
   name TEXT NOT NULL,
+  description TEXT,
+  pins INTEGER ARRAY,
   group_id INTEGER NOT NULL,
   role_overrides TEXT ARRAY,
   sensitive BOOLEAN NOT NULL DEFAULT FALSE

@@ -17,6 +17,8 @@ from starlette.websockets import WebSocketDisconnect
 # from starlette.middleware.httpsredirect import HTTPSRedirectMiddleware # NOTE: No HTTPS support as of 1/4/24
 import uvicorn
 
+from . import sockethandler
+
 # Config variables
 REST_PORT = 8000
 SOCKET_PORT = 8765
@@ -73,9 +75,7 @@ async def socket(websocket: WebSocket):
   await websocket.accept()
   try:
     while True:
-      data = await websocket.receive_text()
-      logger.debug(f'Received data: {data}')
-      await websocket.send_text(data) # Echo test
+      await sockethandler.handle(websocket)
   except WebSocketDisconnect:
     logger.info('Client disconnected')
 # END: Websocket

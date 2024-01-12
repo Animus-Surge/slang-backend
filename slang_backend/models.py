@@ -3,7 +3,7 @@ Slang database models
 
 Changelog:
 Surge: Create models
-Surge - 01/08/24: 
+Surge - 01/08/24: Model work
 """
 
 from pydantic import BaseModel
@@ -17,6 +17,11 @@ class Message(BaseModel):
   channel_id: int
   send_date: datetime.datetime
   edited: bool
+class NewMessage(BaseModel):
+  author: int
+  content: str
+  group_id: int
+  channel_id: int
 
 class Post(BaseModel):
   id: int

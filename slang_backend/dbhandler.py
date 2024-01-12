@@ -14,19 +14,8 @@ conn = None
 
 # Database functions
 
+#Messages
 def create_message(group: int, channel: int, user: int, content: str):
-  """
-  Create message in database
-
-  Args:
-    group (int): ID of group to create message in
-    channel (int): ID of channel to create message in
-    user (int): ID of user to create message as
-    content (str): Content of message
-
-  Returns:
-    int: ID of message
-  """
   global conn
   logger.info('Method call: create_message, with arguments (group=%s, channel=%s, user=%s, content=%s)', (group, channel, user, content))
 
@@ -37,17 +26,10 @@ def create_message(group: int, channel: int, user: int, content: str):
 
   return cur.fetchone()[0]
 
+def update_message(msg_id: int, content: str):
+  pass
+
 def get_messages(group: int, channel: int):
-  """
-  Get messages from database
-
-  Args:
-    group (int): ID of group to get messages from
-    channel (int): ID of channel to get messages from
-
-  Returns:
-    list: List of messages
-  """
   global conn
   logger.info('Method call: get_messages, with arguments (group=%s, channel=%s)', (group, channel))
   cur = conn.cursor()
@@ -58,6 +40,10 @@ def get_messages(group: int, channel: int):
 
   return None # TODO: convert result to json string
 
+#Users
+# TODO
+
+# Initialization
 def init():
   global conn
 
