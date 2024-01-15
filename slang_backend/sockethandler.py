@@ -35,7 +35,6 @@ async def handle(sock: WebSocket):
     await sock.send_text(generate_ping())
   elif dt == 'new_msg':
     # TODO
-    logger.debug(data['data'])
     await sock.send_text(generate_response('msg', {'code': 418, 'message': 'Acknowledged, unimplemented'}))
   else:
     pass
