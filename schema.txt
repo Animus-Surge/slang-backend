@@ -42,14 +42,14 @@ Slang Users: sl_usrs
 - guid: string unique
 - username: string unique
 - displayname: string
-- flags: string (see impl notes)
+- flags: integer (see impl notes)
 - groups: integer array
 - friends: integer array
 - posts: integer array
 - lockdown: boolean (see impl notes)
 
 sl_usrs impl notes:
-- flags: A string with characters to define what the user is: Donor (p), Developer (d), Support team member (s), Bot (b)
+- flags: A number with specific bits set for various reasons (todo: expand on this)
 - lockdown: This user has been flagged by the moderation team and is currently being reviewed. Member cannot send, edit, or delete messages, cannot join or leave groups, and cannot create posts.
 
 Slang Posts: sl_post
@@ -57,5 +57,6 @@ Slang Posts: sl_post
 todo
 
 Slang Roles: sl_role
-
-todo
+- id: integer unique primary
+- text: string
+- perms: integer (see impl notes)

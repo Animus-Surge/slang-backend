@@ -10,10 +10,10 @@ Surge - 01/08/24: Remove multiprocessing bullcrap and add socket testing
 """
 
 from . import dbhandler
-# TODO: import models
+from .models import *
 from loguru import logger
 from fastapi import FastAPI, Response, WebSocket
-from starlette.websockets import WebSocketDisconnect
+from starlette.websockets import WebSocketDisconnect, WebSocketState
 # from starlette.middleware.httpsredirect import HTTPSRedirectMiddleware # NOTE: No HTTPS support as of 1/4/24
 import uvicorn
 
@@ -28,6 +28,8 @@ UVICORN_LOG = "./log_config.ini" # TODO: make the logs look consistent
 app = FastAPI()
 # app.add_middleware(HTTPSRedirectMiddleware)
 
+connected_clients = []
+
 @app.get("/")
 async def root():
   resp = Response(content="unimplemented", status_code=418)
@@ -37,35 +39,62 @@ async def root():
 
 # Messenger routes
 
-# GET: https://api.slang.com/v1/messages
-@app.get("/v1/messages")
-async def api_get_messages(group: int = -1, channel: int = -1):
-  # TODO: Add authentication
-  logger.info('GET: /v1/messages group:%s;channel:%s;', (group, channel))
+# GET: https://api.slang.com/v1/[group]/[channel]/[message]
+# GET: https://api.slang.com/v1/[group]/[channel]/messages
+@app.post('/v1/{group}/{channel}/messages')
+async def api_get_messages(group: int, channel: int, limit: int = 50):
+  pass
 
-  resp = Response(status_code=418)
+# POST: https://api.slang.com/v1/[group]/[channel]/send
+@app.post('/v1/{group}/{channel}/send')
+async def api_send_message(group: int, channel: int, message: NewMessage):
 
-  # If either group or channel is -1, return 400
-  if group == -1 or channel == -1:
-    logger.error('400 - group or channel argument = -1')
-    resp.status_code = 400
-    resp.content = "Invalid group or channel ID"
-  else:
-    _content = dbhandler.get_messages(1,1) # TESTING: bogus data
-    pass
+  pass
 
-  return resp
+# PATCH: https://api.slang.com/v1/[group]/[channel]/[message]/edit
+# DELETE: https://api.slang.com/v1/[group]/[channel]/[message]/delete
 
-# POST: https://api.slang.com/v1/messages/create
-@app.post("/v1/messages/send")
-async def api_send_message(group: int = -1, channel: int = -1, user: int = -1, content: str = ""):
-  # TODO: send update to all connected sockets
+# Channel routes
 
-  dbhandler.create_message(1, 1, 1, 'Hello, World!') # TESTING: bogus data
+# GET: https://api.slang.com/v1/[group]/channels
+# GET: https://api.slang.com/v1/[group]/[channel]
+# POST: https://api.slang.com/v1/[group]/newchannel
+# PATCH: https://api.slang.com/v1/[group]/[channel]/edit
+# DELETE: https://api.slang.com/v1/[group]/[channel]/delete
 
-  return Response(status_code=418)
+# Group routes
+
+# GET: https://api.slang.com/v1/[group]
+# POST: https://api.slang.com/v1/newgroup
+# PATCH: https://api.slang.com/v1/[group]/edit
+# DELETE: https://api.slang.com/v1/[group]/delete
+
+# Post routes
+
+# GET: https://api.slang.com/v1/[group]/posts
+# GET: https://api.slang.com/v1/[group]/posts/[post]
+# POST: https://api.slang.com/v1/[group]/posts/create
+# PATCH: https://api.slang.com/v1/[group]/posts/[post]/edit
+# DELETE: https://api.slang.com/v1/[group]/posts/[post]/delete
+
+# User routes
+
+# GET: https://api.slang.com/v1/users
+# GET: https://api.slang.com/v1/users/[user]
+# POST: https://api.slang.com/v1/users/new
+# PATCH: https://api.slang.com/v1/users/[user]/edit - Auth header MUST match [user] for this to work
+# DELETE: https://api.slang.com/v1/users/[user]/delete - Auth header MUST match [user] for this to work
+
+# Role routes
+
+# GET: https://api.slang.com/v1/[group]/roles
+# GET: https://api.slang.com/v1/[group]/roles/[role]
+# POST: https://api.slang.com/v1/[group]/roles/new
+# PATCH: https://api.slang.com/v1/[group]/roles/[role]/edit
+# DELETE: https://api.slang.com/v1/[group]/roles/[role]/delete
 
 # END: API routes
+
 # BEGIN: Websocket
 
 # SOCKET: ws://api.slang.com/sock
@@ -75,16 +104,22 @@ async def socket(websocket: WebSocket):
   await websocket.accept()
   try:
     while True:
+      connected_clients.append(websocket)
       await sockethandler.handle(websocket)
   except WebSocketDisconnect:
+    # Go through all the connected clients and figure out which one's disconnected
+    for sock in connected_clients:
+      if sock.client_state == WebSocketState.DISCONNECTED: 
+        connected_clients.remove(sock) # Does this work?
     logger.info('Client disconnected')
+
 # END: Websocket
 
 # Main function
 def main():
   logger.debug("Slang Backend - Version 0.1.0")
 
-  if not dbhandler.init():
+  if not dbhandler.init(): # Don't allow the backend to continue if the database doesn't work at all, makes it useless
     logger.critical('Fatal error whilst initializing database, unrecoverable error. Terminating...')
     exit(1)
 

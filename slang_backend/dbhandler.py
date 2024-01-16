@@ -14,34 +14,10 @@ conn = None
 
 # Database functions
 
-#Messages
-def create_message(group: int, channel: int, user: int, content: str):
-  global conn
-  logger.info('Method call: create_message, with arguments (group=%s, channel=%s, user=%s, content=%s)', (group, channel, user, content))
+#Message functions
 
-  cur = conn.cursor()
-
-  cur.execute("INSERT INTO sl_msgs (groupid, channelid, author, content) VALUES (%s, %s, %s, %s) RETURNING id;", (group, channel, user, content))
-  conn.commit()
-
-  return cur.fetchone()[0]
-
-def update_message(msg_id: int, content: str):
+def create_new_message():
   pass
-
-def get_messages(group: int, channel: int):
-  global conn
-  logger.info('Method call: get_messages, with arguments (group=%s, channel=%s)', (group, channel))
-  cur = conn.cursor()
-  cur.execute("SELECT content, author FROM sl_msgs WHERE group_id=%s AND channel_id=%s;", (group, channel))
-
-  result = cur.fetchall()
-  print(result)
-
-  return None # TODO: convert result to json string
-
-#Users
-# TODO
 
 # Initialization
 def init():
@@ -58,9 +34,9 @@ def init():
     except psycopg.errors.SyntaxError:
       logger.exception('Syntax error whilst attempting database migration run')
       return False
-  
-  conn.commit() 
-  
+
+  conn.commit()
+
   logger.info("Database initialized.")
   return True
 
