@@ -1,7 +1,7 @@
 from fastapi.websockets import WebSocket
 from loguru import logger
 
-from .models import *
+from .models import NewMessage
 
 import json
 
@@ -23,6 +23,9 @@ def generate_error(message: str, http_code: int):
 
 def generate_ping():
   return generate_response('pong')
+
+def generate_success(content: any):
+  return generate_response('success', content)
 
 async def handle(sock: WebSocket):
   data = json.loads(await sock.receive_text())

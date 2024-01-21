@@ -9,6 +9,7 @@ License: Apache 2.0
 """
 
 import slang_backend
+import slang_backend.utils.testing as testing
 from loguru import logger
 import psycopg
 import sys
@@ -52,6 +53,16 @@ if __name__ == "__main__":
 
       logger.success('Table drop complete.')
       exit(0)
+    elif arg == '--test':
+      logger.info('Running test system...')
+
+      # Database testing
+      slang_backend.dbhandler.__test()
+
+      # (Might also need to do testing with sockets, api, and models)
+
+      logger.info(f'Testing complete. Number of errors: {testing.num_errors}')
+      exit(0 if testing.num_errors == 0 else 1)
     else:
       logger.error(f'Unknown argument {arg}')
       exit(1)

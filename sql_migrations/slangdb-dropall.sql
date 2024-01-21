@@ -1,9 +1,9 @@
 -- Slang Table Wipe migration
 
 -- WARNING: RUNNING THIS SCRIPT ***WILL*** DELETE ALL DATA IN THE DATABASE
-DROP TABLE sl_chnl;
-DROP TABLE sl_grps;
-DROP TABLE sl_msgs;
-DROP TABLE sl_post;
-DROP TABLE sl_role;
-DROP TABLE sl_usrs;
+DROP TABLE IF EXISTS sl_chnl;
+DROP TABLE IF EXISTS sl_grps;
+DROP TABLE IF EXISTS sl_msgs;
+DROP TABLE IF EXISTS sl_post;
+DROP TABLE IF EXISTS sl_role;
+DROP TABLE IF EXISTS sl_usrs;

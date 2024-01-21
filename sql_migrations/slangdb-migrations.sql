@@ -48,6 +48,8 @@ CREATE TABLE IF NOT EXISTS sl_grps (
   admins INTEGER ARRAY
 );
 
+-- Reserved groups: -10 user messages (channels will match user ids); -1 global group
+
 -- Create the roles table
 CREATE TABLE IF NOT EXISTS sl_role (
   id SERIAL PRIMARY KEY,
@@ -66,12 +68,12 @@ CREATE TABLE IF NOT EXISTS sl_usrs (
   bio TEXT,
   status TEXT,
   pronouns TEXT,
-  flags TEXT NOT NULL DEFAULT null,
+  flags INTEGER NOT NULL DEFAULT 0,
   groups INTEGER ARRAY,
   friends INTEGER ARRAY,
   blocked INTEGER ARRAY,
   posts INTEGER ARRAY,
-  lockdown BOOLEAN NOT NULL DEFAULT FALSE,
+  lockdown BOOLEAN NOT NULL DEFAULT FALSE, --Shouldn't be visible to anyone but slang staff
   UNIQUE(username, guid)
 );
 -- See docs/users for more info on the difference between the id and guid and flags and lockdown information
