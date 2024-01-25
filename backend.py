@@ -9,10 +9,10 @@ License: Apache 2.0
 """
 
 import slang_backend
-import slang_backend.utils.testing as testing
 from loguru import logger
 import psycopg
 import sys
+import tests
 """
 TODO BOARD:
 
@@ -56,13 +56,9 @@ if __name__ == "__main__":
     elif arg == '--test':
       logger.info('Running test system...')
 
-      # Database testing
-      slang_backend.dbhandler.__test()
+      tests.run_tests()
 
-      # (Might also need to do testing with sockets, api, and models)
-
-      logger.info(f'Testing complete. Number of errors: {testing.num_errors}')
-      exit(0 if testing.num_errors == 0 else 1)
+      exit(0)
     else:
       logger.error(f'Unknown argument {arg}')
       exit(1)

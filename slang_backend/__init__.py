@@ -15,7 +15,7 @@ from loguru import logger
 from fastapi import FastAPI, Response, WebSocket
 from starlette.websockets import WebSocketDisconnect, WebSocketState
 # from starlette.middleware.httpsredirect import HTTPSRedirectMiddleware # NOTE: No HTTPS support as of 1/4/24
-import uvicorn
+import uvicorn, datetime, time  # noqa: E401
 
 from . import sockethandler
 
@@ -25,6 +25,9 @@ SOCKET_PORT = 8765
 
 UVICORN_LOG = "./log_config.ini" # TODO: make the logs look consistent
 
+# Utitilty vars
+start_time = time.time()
+
 app = FastAPI()
 # app.add_middleware(HTTPSRedirectMiddleware)
 
@@ -32,22 +35,42 @@ connected_clients = []
 
 @app.get("/")
 async def root():
-  resp = Response(content="unimplemented", status_code=418)
-  return resp
+  return Response()
 
 # BEGIN: API routes
 
 # Utility routes - No auth header required for these endpoints
 
 # GET: https://api.slang.com/v1/time - Gets the time of the server
+@app.get('/v1/time')
+async def api_get_time():
+  ti = datetime.datetime.now()
+  return Response(ti)
+  
 # GET: https://api.slang.com/v1/ping - Pings the server for uptime
+@app.get('/v1/uptime')
+async def api_get_uptime():
+  # TODO
+  pass
 
 # Messenger routes
 
 # GET: https://api.slang.com/v1/[group]/[channel]/[message]
 @app.get('/v1/{group}/{channel}/{message}')
 async def api_get_message(group: int, channel: int, message: int):
-  pass
+  rsp = Response(None, 404)
+  # Special group endpoint checks
+  if group == -1: # Global group
+    pass
+  elif group == -2: # System messages
+    pass
+  elif group == -3: # Direct messages
+    pass
+  elif group == -4: # Group direct messages
+    # User must be in [channel]
+    pass
+
+  return rsp
 
 # GET: https://api.slang.com/v1/[group]/[channel]/messages
 @app.get('/v1/{group}/{channel}/messages')
@@ -62,9 +85,9 @@ async def api_send_message(group: int, channel: int, message: NewMessage):
 # PATCH: https://api.slang.com/v1/[group]/[channel]/[message]/edit
 # DELETE: https://api.slang.com/v1/[group]/[channel]/[message]/delete (2)
 
-# All fields should be numbers. @dms group endpoint is used for messages, with [channel] as user id for user messages
-#  TODO: how are we going to do group dms like this?
-#  Maybe an @ before the user id in [channel] could represent a group dm?
+# -2 group endpoint used for system messages, such as security notifications and announcements; [channel] field not used
+# All fields should be numbers. -3 group endpoint is used for messages, with [channel] as user id for user messages
+# Group messages endpoint: -4, with [channel] being a real channel with group ID being -4
 
 # Channel routes
 
@@ -153,3 +176,7 @@ def main():
 
   logger.info("Starting HTTP listener...")
   uvicorn.run(app, host='127.0.0.1', port=REST_PORT, log_level='info', log_config=UVICORN_LOG)
+
+def __test():
+  logger.debug(start_time)
+  pass
