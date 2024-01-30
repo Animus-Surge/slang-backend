@@ -4,6 +4,9 @@ Backend module for Slang
 
 Current Version: v0.1.0
 
+## Heads up!
+Slang's database is currently undergoing a full redesign. Database functionality is not present at this time. Sockets and http listeners are still active and is the main focus.
+
 ## What is Slang?
 
 Slang is an open source social media platform aiming to take the strengths of already present platforms and combine them into an all-in-one platform for sharing media and establishing communities.
