@@ -48,50 +48,9 @@ def create_new_group(group: NewGroup):
 
 # Initialization
 def init():
-  # global conn
-
-  # logger.info("Initializing database...")
-
-  # conn = psycopg.connect("dbname=slangdb user=postgres")
-  # cur = conn.cursor()
-
-  # with open('./sql_migrations/slangdb-migrations.sql', 'r') as mig:
-  #   try:
-  #     cur.execute(mig.read())
-  #   except psycopg.errors.SyntaxError:
-  #     logger.exception('Syntax error whilst attempting database migration run')
-  #     return False
-
-  # conn.commit()
-
-  # logger.info("Database initialized.")
   logger.warning('Database rework in progress, database handler is not functional')
   return True
 
 # Slangdb Test System
 def __test():
-  # # Initialize test database in slangdb_test db
-
-  # global conn
-  # logger.info('Initializing database testing...')
-  # conn = psycopg.connect('dbname=slangdb_test user=postgres')
-
-  # # Clear everything before trying again (yes its expensive I know)
-  # cur = conn.cursor()
-  # with open('./sql_migrations/slangdb-dropall.sql', 'r') as drop:
-  #   cur.execute(drop.read())
-  
-  # conn.commit()
-
-  # # Create the tables in our test database
-  # with open('./sql_migrations/slangdb-migrations.sql', 'r') as mig:
-  #   try:
-  #     cur.execute(mig.read())
-  #   except psycopg.errors.SyntaxError:
-  #     logger.exception('Syntax error whilst attempting database migration run in test')
-  #     return
-  
-  # conn.commit()
-
-  # logger.info('Test database initialized.')
   logger.error('Database rework in progress, database handler is not functional')

@@ -1,8 +1,6 @@
 from fastapi.websockets import WebSocket
 from loguru import logger
 
-from .models import NewMessage
-
 import json
 
 def generate_response(type: str, data: any = None):
@@ -33,7 +31,7 @@ async def handle(sock: WebSocket):
   logger.info('Received data: ' + json.dumps(data))
 
   if 'type' not in data:
-    generate_error('Missing required field "type"', 400)
+    sock.send_text(generate_error('Missing required field "type"', 400))
     return
 
   dt = data['type']
@@ -45,9 +43,6 @@ async def handle(sock: WebSocket):
   if dt == 'ping':
     await sock.send_text(generate_ping())
   elif dt == 'new_msg':
-    value = data['data']
-    value = NewMessage.model_validate(value)
-    logger.debug(value)
     # TODO
     await sock.send_text(generate_ack('Unimplemented'))
   else:

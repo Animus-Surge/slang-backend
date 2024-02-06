@@ -10,12 +10,12 @@ Surge - 01/08/24: Remove multiprocessing bullcrap and add socket testing
 """
 
 from . import dbhandler
-from .models import NewMessage
 from loguru import logger
 from fastapi import FastAPI, Response, WebSocket
 from starlette.websockets import WebSocketDisconnect, WebSocketState
 # from starlette.middleware.httpsredirect import HTTPSRedirectMiddleware # NOTE: No HTTPS support as of 1/4/24
-import uvicorn, datetime, time  # noqa: E401
+import uvicorn
+import datetime
 
 from . import sockethandler
 
@@ -26,7 +26,7 @@ SOCKET_PORT = 8765
 UVICORN_LOG = "./log_config.ini" # TODO: make the logs look consistent
 
 # Utitilty vars
-start_time = time.time()
+start_time = datetime.datetime.now()
 
 app = FastAPI()
 # app.add_middleware(HTTPSRedirectMiddleware)
@@ -56,32 +56,8 @@ async def api_get_uptime():
 # Messenger routes
 
 # GET: https://api.slang.com/v1/[group]/[channel]/[message]
-@app.get('/v1/{group}/{channel}/{message}')
-async def api_get_message(group: int, channel: int, message: int):
-  rsp = Response(None, 404)
-  # Special group endpoint checks
-  if group == -1: # Global group
-    pass
-  elif group == -2: # System messages
-    pass
-  elif group == -3: # Direct messages
-    pass
-  elif group == -4: # Group direct messages
-    # User must be in [channel]
-    pass
-
-  return rsp
-
 # GET: https://api.slang.com/v1/[group]/[channel]/messages
-@app.get('/v1/{group}/{channel}/messages')
-async def api_get_messages(group: int, channel: int, limit: int = 50):
-  pass
-
 # POST: https://api.slang.com/v1/[group]/[channel]/send
-@app.post('/v1/{group}/{channel}/send')
-async def api_send_message(group: int, channel: int, message: NewMessage):
-  pass
-
 # PATCH: https://api.slang.com/v1/[group]/[channel]/[message]/edit
 # DELETE: https://api.slang.com/v1/[group]/[channel]/[message]/delete (2)
 
